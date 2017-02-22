@@ -12,6 +12,13 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::get('/', function(){
+   return [
+       'success' => true
+   ];
+});
+
+Route::post('/event/create', 'EventController@create');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
