@@ -56,6 +56,14 @@ class PokerHandEvaluatorTest extends TestCase
                     'values' => [11, 6, 5, 4, 3],
                 ],
             ],
+            'full_house' => [
+                ['card_hearts_3', 'card_hearts_6', 'card_diamond_3', 'card_spades_3', 'card_hearts_11', 'card_spades_7', 'card_hearts_11'],
+                [
+                    'rank' => PokerHandEvaluator::FULL_HOUSE,
+                    'three_of_a_kind_value' => 3,
+                    'pair_value' => 11,
+                ],
+            ],
         ];
     }
 

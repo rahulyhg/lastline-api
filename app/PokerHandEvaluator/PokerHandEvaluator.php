@@ -10,6 +10,7 @@ class PokerHandEvaluator
     const THREE_OF_A_KIND = 4;
     const STRAIGHT = 5;
     const FLUSH = 6;
+    const FULL_HOUSE = 7;
 
     private $cards = [];
 
@@ -17,6 +18,11 @@ class PokerHandEvaluator
     {
         $this->convertCards($cards);
         $this->sortByValue();
+
+        if ($result = $this->isFullHouse())
+        {
+            return $result;
+        }
 
         if ($result = $this->isFlush())
         {
@@ -66,6 +72,29 @@ class PokerHandEvaluator
         });
     }
 
+    private function isFullHouse()
+    {
+        $threeOfAKind = $this->findCardsWithSameValue($this->cards, 3);
+
+        if (!$threeOfAKind)
+        {
+            return false;
+        }
+
+        $pair = $this->findCardsWithSameValue($this->excludeCards($threeOfAKind));
+
+        if (!$pair)
+        {
+            return false;
+        }
+
+        return [
+            'rank' => self::FULL_HOUSE,
+            'three_of_a_kind_value' => $threeOfAKind[0]['value'],
+            'pair_value' => $pair[0]['value'],
+        ];
+    }
+
     private function isFlush()
     {
         $cardsOfColors = [
@@ -87,6 +116,8 @@ class PokerHandEvaluator
                 ];
             }
         }
+
+        return false;
     }
 
     private function isStraight()
