@@ -2,8 +2,9 @@
 
 namespace App\Events;
 
+use App\MatchMaking\Entity\Game;
 use App\User;
-use App\Entity\Game;
+
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -50,7 +51,14 @@ class GameHasCreated implements ShouldBroadcast
     public function broadcastWith()
     {
     	return [
-    		'foo' => 'bar'
+    		'token'             => $this->game->getGameToken(),
+		    'gameId'            => $this->game->getGameId(),
+		    'smallBlindValue'   => $this->game->getSmallBlindValue(),
+		    'bigBlindValue'     => $this->game->getBigBlindValue(),
+		    'dealer'            => $this->game->getDealer()->toArray(),
+		    'bigBlind'          => $this->game->getBigBlind()->toArray(),
+		    'smallBlind'        => $this->game->getSmallBlind()->toArray(),
+		    'activePlayer'      => $this->game->getActivePlayer()->toArray()
 	    ];
     }
 

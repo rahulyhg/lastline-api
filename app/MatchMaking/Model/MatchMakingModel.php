@@ -3,6 +3,7 @@
 namespace App\MatchMaking\Model;
 
 use App\Entity\Game;
+use App\Events\DealCard;
 use App\Events\GameHasCreated;
 use App\MatchMakingQueue;
 use App\PokerEngineAdapter\PokerEngineAdapter;
@@ -57,9 +58,9 @@ class MatchMakingModel
 
 	public function findMatch()
 	{
-		$minPlayers = 2;
-		$maxPlayers = 8;
-		$waiting = $this->matchMakingRepository->allWaitingPlayers();
+		$minPlayers = config('matchmaking.playersMin');
+		$maxPlayers = config('matchmaking.playersMax');
+		$waiting    = $this->matchMakingRepository->allWaitingPlayers();
 
 		// ha kevesebb van a minimálisnál, akkor nem csinálunk meccset
 		if($waiting->count() <= $minPlayers)
@@ -87,23 +88,30 @@ class MatchMakingModel
 	 */
 	public function createMatchWithUsers(Collection $users)
 	{
-		$game = new Game();
-
+		$playerIds = [];
 		// töröljük az embereket a queueból
-		$users->each(function(User $user) use (&$game) {
+		$users->each(function(User $user) use (&$playerIds){
 			// $this->matchMakingRepository->removeUserFromQueue($user);
-			$game->registerPlayer($user->id);
+			$playerIds[] = ['id' => $user->id];
 		});
 
 		$pokerEngine = new PokerEngineAdapter();
-		$game        = $pokerEngine->create($game);
+		$game        = $pokerEngine->createGame($playerIds);
 
-		// create a match
-		// call poker service
-		// assign players
+		// websocketre küldés
 		foreach($users as $user)
 		{
 			broadcast(new GameHasCreated($game, $user));
+		}
+
+		// kiosztjuk a kártyákat
+		foreach($game->getPlayerCards() as $userId => $playerCards)
+		{
+			foreach($playerCards as $playerCard)
+			{
+				sleep(1);
+				broadcast(new DealCard($userId, $playerCard));
+			}
 		}
 
 	}

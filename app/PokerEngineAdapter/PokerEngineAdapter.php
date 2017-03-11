@@ -2,30 +2,69 @@
 
 namespace App\PokerEngineAdapter;
 
-use App\Entity\Game;
+use App\MatchMaking\Entity\Player;
+use App\MatchMaking\Entity\Game;
 use GuzzleHttp\Client;
 
-class PokerEngineAdapter implements PokerEngineAdapterInterface
+class PokerEngineAdapter 
 {
     const POKER_ENGINE_URL = 'http://poker-service.fiterik.com';
 
-    public function create(Game $game)
+	/**
+	 * @param array $playerIds
+	 *
+	 * @return Game
+	 */
+    public function createGame(array $playerIds) : Game
     {
-        $data = $this->post('/game/create', ['players' => $game->getPlayerIds()]);
+    	$response = $this->post('/game/create', [
+    		'players' => $playerIds
+	    ]);
 
-        $game
-            ->setId($data['gameId'])
-            ->setPlayersCards($data['playerCards'])
-            ->setDealerPlayerId($data['dealer']['id'])
-            ->setSmallBlindValue(20)
-            ->setSmallBlindPlayerId($data['smallBlind']['id'])
-            ->setBigBlindValue(40)
-            ->setBigBlindPlayerId($data['smallBlind']['id'])
-            ->setActivePlayerId($data['dealer']['id']);
-
-        return $game;
+    	return $this->buildGameEntity($response);
     }
 
+	/**
+	 * @param array $player
+	 *
+	 * @return Player
+	 */
+    private function createPlayerEntity(array $player) : Player
+    {
+    	return new Player(
+    		$player['id'],
+		    $player['gameId'],
+		    $player['place'],
+		    $player['dealer']
+	    );
+    }
+
+	/**
+	 * @param array $params
+	 *
+	 * @return Game
+	 */
+    private function buildGameEntity(array $params) : Game
+    {
+    	return new Game(
+    		$params['gameToken'],
+		    $params['gameId'],
+		    $params['smallBlindValue'],
+		    $params['bigBlindValue'],
+		    $params['playerCards'],
+		    $this->createPlayerEntity($params['dealer']),
+		    $this->createPlayerEntity($params['bigBlind']),
+			$this->createPlayerEntity($params['smallBlind']),
+			$this->createPlayerEntity($params['activePlayer'])
+        );
+    }
+
+	/**
+	 * @param string $uri
+	 * @param array  $params
+	 *
+	 * @return mixed
+	 */
     private function post(string $uri, array $params = [])
     {
         $client = new Client(['base_uri' => self::POKER_ENGINE_URL]);

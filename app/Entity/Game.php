@@ -39,6 +39,11 @@ class Game
         return $players;
     }
 
+    public function getCardsForPlayer()
+    {
+
+    }
+
     public function setId(string $id) : Game
     {
         $this->id = $id;
