@@ -8,6 +8,7 @@ class PokerHandEvaluator
     const ONE_PAIR = 2;
     const TWO_PAIR = 3;
     const THREE_OF_A_KIND = 4;
+    const STRAIGHT = 5;
 
     private $cards = [];
 
@@ -15,6 +16,11 @@ class PokerHandEvaluator
     {
         $this->convertCards($cards);
         $this->sortByValue();
+
+        if ($result = $this->isStraight())
+        {
+            return $result;
+        }
 
         if ($result = $this->isThreeOfAKind())
         {
@@ -52,6 +58,31 @@ class PokerHandEvaluator
         usort($this->cards, function($a, $b) {
             return $b['value'] - $a['value'];
         });
+    }
+
+    private function isStraight()
+    {
+        $cardsInStraight = [];
+
+        foreach ($this->cards as $card)
+        {
+            if (empty($cardsInStraight) || end($cardsInStraight)['value'] - 1 == $card['value'])
+            {
+                $cardsInStraight[] = $card;
+            } else {
+                $cardsInStraight = [$card];
+            }
+
+            if (count($cardsInStraight) == 5)
+            {
+                return [
+                    'rank' => self::STRAIGHT,
+                    'straight_value' => $cardsInStraight[0]['value'],
+                ];
+            }
+        }
+
+        return false;
     }
 
     private function isThreeOfAKind()

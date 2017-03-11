@@ -42,6 +42,13 @@ class PokerHandEvaluatorTest extends TestCase
                     'kickers' => [12, 7],
                 ],
             ],
+            'straight' => [
+                ['card_diamond_3', 'card_hearts_6', 'card_diamond_11', 'card_hearts_5', 'card_clubs_4', 'card_spades_7', 'card_clubs_11'],
+                [
+                    'rank' => PokerHandEvaluator::STRAIGHT,
+                    'straight_value' => 7,
+                ],
+            ],
         ];
     }
 
