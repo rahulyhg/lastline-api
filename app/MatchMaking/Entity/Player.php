@@ -8,7 +8,6 @@ class Player
 	private $id;
 	private $gameId;
 	private $place;
-	private $dealer;
 
 	/**
 	 * Player constructor.
@@ -16,14 +15,12 @@ class Player
 	 * @param string $id
 	 * @param int    $gameId
 	 * @param int    $place
-	 * @param int    $dealer
 	 */
-	public function __construct($id, $gameId, $place, $dealer)
+	public function __construct($id, $gameId, $place)
 	{
 		$this->id = $id;
 		$this->gameId = $gameId;
 		$this->place = $place;
-		$this->dealer = $dealer;
 	}
 
 	/**
@@ -66,8 +63,7 @@ class Player
 		return [
 			'id'        => $this->getId(),
 			'gameId'    => $this->getGameId(),
-			'place'     => $this->getPlace(),
-			'dealer'    => $this->getDealer()
+			'place'     => $this->getPlace()
 		];
 	}
 }

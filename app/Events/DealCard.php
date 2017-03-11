@@ -16,17 +16,20 @@ class DealCard implements ShouldBroadcast
 
 	private $userId;
 	private $cardName;
+	private $targetId;
 
 	/**
      * Create a new event instance.
      *
 	 * @param string $userId
 	 * @param string $cardName
+	 * @param string $targetId
      */
-    public function __construct($userId, $cardName)
+    public function __construct($userId, $cardName, $targetId)
     {
-	    $this->userId = $userId;
+	    $this->userId   = $userId;
 	    $this->cardName = $cardName;
+	    $this->targetId = $targetId;
     }
 
     /**
@@ -36,7 +39,7 @@ class DealCard implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('user.' . $this->userId);
+        return new Channel('user.' . $this->targetId);
     }
 
 	/**
@@ -44,8 +47,17 @@ class DealCard implements ShouldBroadcast
 	 */
 	public function broadcastWith()
 	{
+		if($this->userId !== $this->targetId)
+		{
+			$this->cardName = 'back';
+		}
+
 		return [
-			'card' => $this->cardName
+			'action' => 'deal.card',
+			'data' => [
+				'card'   => $this->cardName,
+				'userId' => $this->userId
+			]
 		];
 	}
 
@@ -56,6 +68,6 @@ class DealCard implements ShouldBroadcast
 	 */
 	public function broadcastAs()
 	{
-		return 'deal.card';
+		return 'poker';
 	}
 }

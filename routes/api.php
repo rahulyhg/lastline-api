@@ -24,21 +24,19 @@ Route::post('auth/register', 'AuthController@register');
 
 Route::group(['middleware' => 'jwt.auth'], function(){
 
+	// auth check
 	Route::get('auth/check', 'AuthController@check');
 
 	// matchmaking routes
 	Route::post('matchmaking/register', 'MatchmakingController@register');
 	Route::post('matchmaking/cancel', 'MatchMakingController@cancel');
+
+	// game events
+	/*Route::post('game/check', 'GameController@check');
+	Route::post('game/fold', 'GameController@fold');
+	Route::post('game/raise', 'GameController@raise');
+	Route::post('game/call', 'GameController@call');*/
+
 });
-
-
-
-
-
-
 
 Route::post('/event/create', 'EventController@create');
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});

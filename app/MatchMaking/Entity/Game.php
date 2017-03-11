@@ -139,4 +139,21 @@ class Game
 		return $this->activePlayer;
 	}
 
+	/**
+	 * @return array
+	 */
+	public function toArray() : array
+	{
+		return [
+			'token'             => $this->getGameToken(),
+			'gameId'            => $this->getGameId(),
+			'smallBlindValue'   => $this->getSmallBlindValue(),
+			'bigBlindValue'     => $this->getBigBlindValue(),
+			'dealer'            => $this->getDealer()->toArray(),
+			'bigBlind'          => $this->getBigBlind()->toArray(),
+			'smallBlind'        => $this->getSmallBlind()->toArray(),
+			'activePlayer'      => $this->getActivePlayer()->toArray()
+		];
+	}
+
 }

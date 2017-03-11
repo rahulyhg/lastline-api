@@ -42,24 +42,15 @@ class GameHasCreated implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('user.' . $this->user->id);
+        return new Channel('user.' . $this->user->id);
     }
 
 	/**
 	 * @return array
 	 */
-    public function broadcastWith()
+    public function broadcastWith() : array
     {
-    	return [
-    		'token'             => $this->game->getGameToken(),
-		    'gameId'            => $this->game->getGameId(),
-		    'smallBlindValue'   => $this->game->getSmallBlindValue(),
-		    'bigBlindValue'     => $this->game->getBigBlindValue(),
-		    'dealer'            => $this->game->getDealer()->toArray(),
-		    'bigBlind'          => $this->game->getBigBlind()->toArray(),
-		    'smallBlind'        => $this->game->getSmallBlind()->toArray(),
-		    'activePlayer'      => $this->game->getActivePlayer()->toArray()
-	    ];
+    	return $this->game->toArray();
     }
 
 	/**
@@ -69,6 +60,6 @@ class GameHasCreated implements ShouldBroadcast
 	 */
 	public function broadcastAs()
 	{
-		return 'game.created';
+		return 'poker';
 	}
 }

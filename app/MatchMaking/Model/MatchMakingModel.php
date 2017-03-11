@@ -109,10 +109,12 @@ class MatchMakingModel
 		{
 			foreach($playerCards as $playerCard)
 			{
+				foreach($users as $user)
+				{
+					broadcast(new DealCard($userId, $playerCard, $user->id));
+				}
 				sleep(1);
-				broadcast(new DealCard($userId, $playerCard));
 			}
 		}
-
 	}
 }

@@ -34,8 +34,7 @@ class PokerEngineAdapter
     	return new Player(
     		$player['id'],
 		    $player['gameId'],
-		    $player['place'],
-		    $player['dealer']
+		    $player['place']
 	    );
     }
 
