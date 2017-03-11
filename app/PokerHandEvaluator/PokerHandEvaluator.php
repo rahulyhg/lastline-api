@@ -13,6 +13,7 @@ class PokerHandEvaluator
     const FULL_HOUSE = 7;
     const FOUR_OF_A_KIND = 8;
     const STRAIGHT_FLUSH = 9;
+    const ROYAL_FLUSH = 10;
 
     private $cards = [];
 
@@ -20,6 +21,11 @@ class PokerHandEvaluator
     {
         $this->convertCards($cards);
         $this->sortByValue();
+
+        if ($result = $this->isRoyalFlush())
+        {
+            return $result;
+        }
 
         if ($result = $this->isStraightFlush())
         {
@@ -82,6 +88,18 @@ class PokerHandEvaluator
         usort($this->cards, function($a, $b) {
             return $b['value'] - $a['value'];
         });
+    }
+
+    private function isRoyalFlush()
+    {
+        $straightFlush = $this->isStraightFlush();
+
+        if (!$straightFlush || $straightFlush['value'] < 13)
+        {
+            return false;
+        }
+
+        return ['rank' => self::ROYAL_FLUSH];
     }
 
     private function isStraightFlush()

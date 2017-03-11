@@ -79,6 +79,12 @@ class PokerHandEvaluatorTest extends TestCase
                     'value' => 7,
                 ],
             ],
+            'royal_flush' => [
+                ['card_hearts_13', 'card_hearts_11', 'card_hearts_10', 'card_hearts_12', 'card_hearts_5', 'card_diamons_11', 'card_hearts_14'],
+                [
+                    'rank' => PokerHandEvaluator::ROYAL_FLUSH,
+                ],
+            ],
         ];
     }
 
