@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/', function(){
+Route::middleware('cors')->get('/', function(){
    return [
        'success' => true
    ];
@@ -22,7 +22,7 @@ Route::get('/', function(){
 Route::post('auth/register', 'AuthController@register');
 
 
-Route::group(['middleware' => 'jwt.auth'], function(){
+Route::group(['middleware' => ['jwt.auth', 'cors']], function(){
 
 	// auth check
 	Route::get('auth/check', 'AuthController@check');
