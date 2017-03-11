@@ -2,6 +2,8 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\ApiAuthMiddleware;
+use App\Http\Middleware\AutoAuthMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -37,7 +39,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            'throttle:60,1',
+            //'throttle:60,1',
             'bindings',
         ],
     ];
@@ -50,11 +52,15 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+    	//'auto-auth' => AutoAuthMiddleware::class,
+    	//'api-auth' => ApiAuthMiddleware::class,
         'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+	    'jwt.auth' => \Tymon\JWTAuth\Middleware\GetUserFromToken::class,
+	    'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
     ];
 }
