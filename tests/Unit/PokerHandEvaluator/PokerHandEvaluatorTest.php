@@ -72,6 +72,13 @@ class PokerHandEvaluatorTest extends TestCase
                     'kicker' => 11,
                 ],
             ],
+            'straight_flush' => [
+                ['card_hearts_3', 'card_hearts_6', 'card_hearts_13', 'card_hearts_4', 'card_hearts_5', 'card_diamons_11', 'card_hearts_7'],
+                [
+                    'rank' => PokerHandEvaluator::STRAIGHT_FLUSH,
+                    'value' => 7,
+                ],
+            ],
         ];
     }
 

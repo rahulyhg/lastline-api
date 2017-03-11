@@ -12,6 +12,7 @@ class PokerHandEvaluator
     const FLUSH = 6;
     const FULL_HOUSE = 7;
     const FOUR_OF_A_KIND = 8;
+    const STRAIGHT_FLUSH = 9;
 
     private $cards = [];
 
@@ -19,6 +20,11 @@ class PokerHandEvaluator
     {
         $this->convertCards($cards);
         $this->sortByValue();
+
+        if ($result = $this->isStraightFlush())
+        {
+            return $result;
+        }
 
         if ($result = $this->isFourOfAKind())
         {
@@ -78,6 +84,28 @@ class PokerHandEvaluator
         });
     }
 
+    private function isStraightFlush()
+    {
+        $flush = $this->findFlush();
+
+        if (!$flush)
+        {
+            return false;
+        }
+
+        $straight = $this->isStraight($flush);
+
+        if (!$straight)
+        {
+            return false;
+        }
+
+        return [
+            'rank' => self::STRAIGHT_FLUSH,
+            'value' => $straight['value'],
+        ];
+    }
+
     private function isFourOfAKind()
     {
         $fourOfAKind = $this->findCardsWithSameValue($this->cards, 4);
@@ -119,6 +147,21 @@ class PokerHandEvaluator
 
     private function isFlush()
     {
+        $flush = $this->findFlush();
+
+        if (!$flush)
+        {
+            return false;
+        }
+
+        return [
+            'rank' => self::FLUSH,
+            'values' => $this->selectHighestValues($flush),
+        ];
+    }
+
+    private function findFlush()
+    {
         $cardsOfColors = [
             'diamond' => [],
             'hearts' => [],
@@ -129,24 +172,25 @@ class PokerHandEvaluator
         foreach ($this->cards as $card)
         {
             $cardsOfColors[$card['color']][] = $card;
+        }
 
-            if (count($cardsOfColors[$card['color']]) == 5)
+        foreach ($cardsOfColors as $cardsOfSpecifiedColor)
+        {
+            if (count($cardsOfSpecifiedColor) >= 5)
             {
-                return [
-                    'rank' => self::FLUSH,
-                    'values' => $this->selectHighestValues($cardsOfColors[$card['color']]),
-                ];
+                return $cardsOfSpecifiedColor;
             }
         }
 
         return false;
     }
 
-    private function isStraight()
+    private function isStraight($cards = null)
     {
+        $cards = $cards ?? $this->cards;
         $cardsInStraight = [];
 
-        foreach ($this->cards as $card)
+        foreach ($cards as $card)
         {
             if (empty($cardsInStraight) || end($cardsInStraight)['value'] - 1 == $card['value'])
             {
