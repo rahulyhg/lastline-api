@@ -9,6 +9,7 @@ class PokerHandEvaluator
     const TWO_PAIR = 3;
     const THREE_OF_A_KIND = 4;
     const STRAIGHT = 5;
+    const FLUSH = 6;
 
     private $cards = [];
 
@@ -16,6 +17,11 @@ class PokerHandEvaluator
     {
         $this->convertCards($cards);
         $this->sortByValue();
+
+        if ($result = $this->isFlush())
+        {
+            return $result;
+        }
 
         if ($result = $this->isStraight())
         {
@@ -60,6 +66,29 @@ class PokerHandEvaluator
         });
     }
 
+    private function isFlush()
+    {
+        $cardsOfColors = [
+            'diamond' => [],
+            'hearts' => [],
+            'clubs' => [],
+            'spades' => [],
+        ];
+
+        foreach ($this->cards as $card)
+        {
+            $cardsOfColors[$card['color']][] = $card;
+
+            if (count($cardsOfColors[$card['color']]) == 5)
+            {
+                return [
+                    'rank' => self::FLUSH,
+                    'values' => $this->selectHighestValues($cardsOfColors[$card['color']]),
+                ];
+            }
+        }
+    }
+
     private function isStraight()
     {
         $cardsInStraight = [];
@@ -77,7 +106,7 @@ class PokerHandEvaluator
             {
                 return [
                     'rank' => self::STRAIGHT,
-                    'straight_value' => $cardsInStraight[0]['value'],
+                    'value' => $cardsInStraight[0]['value'],
                 ];
             }
         }
@@ -96,7 +125,7 @@ class PokerHandEvaluator
 
         return [
             'rank' => self::THREE_OF_A_KIND,
-            'three_of_a_kind_value' => $threeOfAKind[0]['value'],
+            'value' => $threeOfAKind[0]['value'],
             'kickers' => $this->selectHighestValues($this->excludeCards($threeOfAKind), 2),
         ];
     }
@@ -136,7 +165,7 @@ class PokerHandEvaluator
 
         return [
             'rank' => self::ONE_PAIR,
-            'pair_value' => $pair[0]['value'],
+            'value' => $pair[0]['value'],
             'kickers' => $this->selectHighestValues($this->excludeCards($pair), 3),
         ];
     }

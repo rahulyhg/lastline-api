@@ -21,7 +21,7 @@ class PokerHandEvaluatorTest extends TestCase
                 ['card_diamond_2', 'card_hearts_6', 'card_diamond_11', 'card_hearts_11', 'card_clubs_12', 'card_spades_7', 'card_clubs_9'],
                 [
                     'rank' => PokerHandEvaluator::ONE_PAIR,
-                    'pair_value' => 11,
+                    'value' => 11,
                     'kickers' => [12, 9, 7],
                 ],
             ],
@@ -38,7 +38,7 @@ class PokerHandEvaluatorTest extends TestCase
                 ['card_diamond_3', 'card_hearts_6', 'card_diamond_11', 'card_hearts_11', 'card_clubs_12', 'card_spades_7', 'card_clubs_11'],
                 [
                     'rank' => PokerHandEvaluator::THREE_OF_A_KIND,
-                    'three_of_a_kind_value' => 11,
+                    'value' => 11,
                     'kickers' => [12, 7],
                 ],
             ],
@@ -46,7 +46,14 @@ class PokerHandEvaluatorTest extends TestCase
                 ['card_diamond_3', 'card_hearts_6', 'card_diamond_11', 'card_hearts_5', 'card_clubs_4', 'card_spades_7', 'card_clubs_11'],
                 [
                     'rank' => PokerHandEvaluator::STRAIGHT,
-                    'straight_value' => 7,
+                    'value' => 7,
+                ],
+            ],
+            'flush' => [
+                ['card_hearts_3', 'card_hearts_6', 'card_diamond_11', 'card_hearts_5', 'card_hearts_4', 'card_spades_7', 'card_hearts_11'],
+                [
+                    'rank' => PokerHandEvaluator::FLUSH,
+                    'values' => [11, 6, 5, 4, 3],
                 ],
             ],
         ];
