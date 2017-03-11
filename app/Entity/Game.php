@@ -27,7 +27,16 @@ class Game
 
     public function getPlayerIds()
     {
-        return array_keys($this->players);
+    	$players = [];
+
+    	foreach($this->players as $id => $player)
+	    {
+	    	$currentPlayer = [];
+	    	$currentPlayer['id'] = $id;
+
+	    	$players[] = $currentPlayer;
+	    }
+        return $players;
     }
 
     public function setId(string $id) : Game

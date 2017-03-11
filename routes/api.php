@@ -18,6 +18,25 @@ Route::get('/', function(){
    ];
 });
 
+// auth routes
+Route::post('auth/register', 'AuthController@register');
+
+
+Route::group(['middleware' => 'jwt.auth'], function(){
+
+	Route::get('auth/check', 'AuthController@check');
+
+	// matchmaking routes
+	Route::post('matchmaking/register', 'MatchmakingController@register');
+	Route::post('matchmaking/cancel', 'MatchMakingController@cancel');
+});
+
+
+
+
+
+
+
 Route::post('/event/create', 'EventController@create');
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
