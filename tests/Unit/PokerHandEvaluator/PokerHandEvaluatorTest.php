@@ -31,7 +31,7 @@ class PokerHandEvaluatorTest extends TestCase
                     'rank' => PokerHandEvaluator::TWO_PAIR,
                     'high_value' => 12,
                     'low_value' => 11,
-                    'kicker' => [9],
+                    'kicker' => 9,
                 ],
             ],
             'three_of_a_kind' => [
@@ -62,6 +62,14 @@ class PokerHandEvaluatorTest extends TestCase
                     'rank' => PokerHandEvaluator::FULL_HOUSE,
                     'three_of_a_kind_value' => 3,
                     'pair_value' => 11,
+                ],
+            ],
+            'four_of_kind' => [
+                ['card_hearts_3', 'card_hearts_6', 'card_diamond_3', 'card_spades_3', 'card_clubs_3', 'card_spades_7', 'card_hearts_11'],
+                [
+                    'rank' => PokerHandEvaluator::FOUR_OF_A_KIND,
+                    'value' => 3,
+                    'kicker' => 11,
                 ],
             ],
         ];

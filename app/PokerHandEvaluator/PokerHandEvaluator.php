@@ -11,6 +11,7 @@ class PokerHandEvaluator
     const STRAIGHT = 5;
     const FLUSH = 6;
     const FULL_HOUSE = 7;
+    const FOUR_OF_A_KIND = 8;
 
     private $cards = [];
 
@@ -18,6 +19,11 @@ class PokerHandEvaluator
     {
         $this->convertCards($cards);
         $this->sortByValue();
+
+        if ($result = $this->isFourOfAKind())
+        {
+            return $result;
+        }
 
         if ($result = $this->isFullHouse())
         {
@@ -70,6 +76,22 @@ class PokerHandEvaluator
         usort($this->cards, function($a, $b) {
             return $b['value'] - $a['value'];
         });
+    }
+
+    private function isFourOfAKind()
+    {
+        $fourOfAKind = $this->findCardsWithSameValue($this->cards, 4);
+
+        if (!$fourOfAKind)
+        {
+            return false;
+        }
+
+        return [
+            'rank' => self::FOUR_OF_A_KIND,
+            'value' => $fourOfAKind[0]['value'],
+            'kicker' => current($this->selectHighestValues($this->excludeCards($fourOfAKind), 1)),
+        ];
     }
 
     private function isFullHouse()
@@ -181,7 +203,7 @@ class PokerHandEvaluator
             'rank' => self::TWO_PAIR,
             'high_value' => $highPair[0]['value'],
             'low_value' => $lowPair[0]['value'],
-            'kicker' => $this->selectHighestValues($this->excludeCards(array_merge($highPair, $lowPair)), 1),
+            'kicker' => current($this->selectHighestValues($this->excludeCards(array_merge($highPair, $lowPair)), 1)),
         ];
     }
 
