@@ -19,7 +19,7 @@ Route::middleware('cors')->get('/', function(){
 });
 
 // auth routes
-Route::get('auth/register', 'AuthController@register');
+Route::middleware('cors')->get('auth/register', 'AuthController@register');
 
 
 Route::group(['middleware' => ['jwt.auth']], function(){
