@@ -177,7 +177,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 	    Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
-	    \App\Providers\MatchMakingServiceProvider::class
+	    \App\Providers\MatchMakingServiceProvider::class,
+	    Barryvdh\Cors\ServiceProvider::class,
 
     ],
 
