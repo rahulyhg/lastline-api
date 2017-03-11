@@ -25,6 +25,15 @@ class PokerHandEvaluatorTest extends TestCase
                     'kickers' => [12, 9, 7],
                 ],
             ],
+            'two_pair' => [
+                ['card_diamond_12', 'card_hearts_6', 'card_diamond_11', 'card_hearts_11', 'card_clubs_12', 'card_spades_7', 'card_clubs_9'],
+                [
+                    'rank' => PokerHandEvaluator::TWO_PAIR,
+                    'high_value' => 12,
+                    'low_value' => 11,
+                    'kicker' => [9],
+                ],
+            ],
         ];
     }
 
