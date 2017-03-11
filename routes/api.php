@@ -19,7 +19,7 @@ Route::middleware('cors')->get('/', function(){
 });
 
 // auth routes
-Route::middleware('cors')->post('auth/register', 'AuthController@register');
+Route::middleware('cors')->get('auth/register', 'AuthController@register');
 
 
 Route::group(['middleware' => ['jwt.auth', 'cors']], function(){
@@ -28,8 +28,8 @@ Route::group(['middleware' => ['jwt.auth', 'cors']], function(){
 	Route::get('auth/check', 'AuthController@check');
 
 	// matchmaking routes
-	Route::post('matchmaking/register', 'MatchmakingController@register');
-	Route::post('matchmaking/cancel', 'MatchMakingController@cancel');
+	Route::get('matchmaking/register', 'MatchmakingController@register');
+	Route::get('matchmaking/cancel', 'MatchMakingController@cancel');
 
 	// game events
 	/*Route::post('game/check', 'GameController@check');
