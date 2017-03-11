@@ -2,7 +2,10 @@
 
 namespace App\MatchMaking\Model;
 
+use App\Entity\Game;
+use App\Events\GameHasCreated;
 use App\MatchMakingQueue;
+use App\PokerEngineAdapter\PokerEngineAdapter;
 use App\User;
 use App\MatchMaking\Repository\MatchMakingRepository;
 use Illuminate\Support\Collection;
@@ -58,18 +61,24 @@ class MatchMakingModel
 		$maxPlayers = 8;
 		$waiting = $this->matchMakingRepository->allWaitingPlayers();
 
-		// ha kevesebb, vagy pont annyi várakozó van, mint a limit, akkor 1 meccsbe rakjuk őket
+		// ha kevesebb van a minimálisnál, akkor nem csinálunk meccset
 		if($waiting->count() <= $minPlayers)
 		{
 			logger()->info('Nincs elég ember party készítéshez. Várakozunk.');
+
+			return;
 		}
-		if($waiting->count() <= $maxPlayers)
+
+		// ha kevesebb, vagy pont annyi várakozó van, mint a limit, akkor 1 meccsbe rakjuk őket
+		else  if($waiting->count() <= $maxPlayers)
 		{
 			$this->createMatchWithUsers($waiting->pluck('user'));
 		}
+
+		// ha több várakozó van a maximálisnál, akkor csinálunk 1 fullos meccset, a többiek meg várnak
 		else if($waiting->count() > $maxPlayers)
 		{
-			$this->createMatchWithUsers($waiting->take($maxPlayers));
+			$this->createMatchWithUsers($waiting->pluck('user')->take($maxPlayers));
 		}
 	}
 
@@ -78,15 +87,24 @@ class MatchMakingModel
 	 */
 	public function createMatchWithUsers(Collection $users)
 	{
+		$game = new Game();
+
 		// töröljük az embereket a queueból
-		$users->each(function(User $user){
-			$this->matchMakingRepository->removeUserFromQueue($user);
+		$users->each(function(User $user) use (&$game) {
+			// $this->matchMakingRepository->removeUserFromQueue($user);
+			$game->registerPlayer($user->id);
 		});
 
+		$pokerEngine = new PokerEngineAdapter();
+		$game        = $pokerEngine->create($game);
 
 		// create a match
 		// call poker service
 		// assign players
+		foreach($users as $user)
+		{
+			broadcast(new GameHasCreated($game, $user));
+		}
 
 	}
 }
