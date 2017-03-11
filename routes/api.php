@@ -19,10 +19,10 @@ Route::middleware('cors')->get('/', function(){
 });
 
 // auth routes
-Route::middleware('cors')->get('auth/register', 'AuthController@register');
+Route::get('auth/register', 'AuthController@register');
 
 
-Route::group(['middleware' => ['jwt.auth', 'cors']], function(){
+Route::group(['middleware' => ['jwt.auth']], function(){
 
 	// auth check
 	Route::get('auth/check', 'AuthController@check');
