@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+
 Route::middleware('cors')->get('/', function(){
    return [
        'success' => true
@@ -25,11 +27,11 @@ Route::middleware('cors')->get('auth/register', 'AuthController@register');
 Route::group(['middleware' => ['jwt.auth']], function(){
 
 	// auth check
-	Route::get('auth/check', 'AuthController@check');
+	Route::middleware('cors')->get('auth/check', 'AuthController@check');
 
 	// matchmaking routes
-	Route::get('matchmaking/register', 'MatchmakingController@register');
-	Route::get('matchmaking/cancel', 'MatchMakingController@cancel');
+	Route::middleware('cors')->get('matchmaking/register', 'MatchmakingController@register');
+	Route::middleware('cors')->get('matchmaking/cancel', 'MatchMakingController@cancel');
 
 	// game events
 	/*Route::post('game/check', 'GameController@check');
