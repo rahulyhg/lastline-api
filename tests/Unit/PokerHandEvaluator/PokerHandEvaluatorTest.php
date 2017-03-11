@@ -34,13 +34,21 @@ class PokerHandEvaluatorTest extends TestCase
                     'kicker' => [9],
                 ],
             ],
+            'three_of_a_kind' => [
+                ['card_diamond_3', 'card_hearts_6', 'card_diamond_11', 'card_hearts_11', 'card_clubs_12', 'card_spades_7', 'card_clubs_11'],
+                [
+                    'rank' => PokerHandEvaluator::THREE_OF_A_KIND,
+                    'three_of_a_kind_value' => 11,
+                    'kickers' => [12, 7],
+                ],
+            ],
         ];
     }
 
     /**
      * @dataProvider cardProvider
      */
-    public function testIsHighCard(array $cards, array $expectedResult)
+    public function testEvaluate(array $cards, array $expectedResult)
     {
         $evaluator = new PokerHandEvaluator();
 

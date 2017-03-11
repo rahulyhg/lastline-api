@@ -7,6 +7,7 @@ class PokerHandEvaluator
     const HIGH_CARD = 1;
     const ONE_PAIR = 2;
     const TWO_PAIR = 3;
+    const THREE_OF_A_KIND = 4;
 
     private $cards = [];
 
@@ -14,6 +15,11 @@ class PokerHandEvaluator
     {
         $this->convertCards($cards);
         $this->sortByValue();
+
+        if ($result = $this->isThreeOfAKind())
+        {
+            return $result;
+        }
 
         if ($result = $this->isTwoPair())
         {
@@ -48,16 +54,32 @@ class PokerHandEvaluator
         });
     }
 
+    private function isThreeOfAKind()
+    {
+        $threeOfAKind = $this->findCardsWithSameValue($this->cards, 3);
+
+        if (!$threeOfAKind)
+        {
+            return false;
+        }
+
+        return [
+            'rank' => self::THREE_OF_A_KIND,
+            'three_of_a_kind_value' => $threeOfAKind[0]['value'],
+            'kickers' => $this->selectHighestValues($this->excludeCards($threeOfAKind), 2),
+        ];
+    }
+
     private function isTwoPair()
     {
-        $highPair = $this->findPair($this->cards);
+        $highPair = $this->findCardsWithSameValue($this->cards);
 
         if (!$highPair)
         {
             return false;
         }
 
-        $lowPair = $this->findPair($this->excludeCards($highPair));
+        $lowPair = $this->findCardsWithSameValue($this->excludeCards($highPair));
 
         if (!$lowPair)
         {
@@ -74,7 +96,7 @@ class PokerHandEvaluator
 
     private function isPair()
     {
-        $pair = $this->findPair($this->cards);
+        $pair = $this->findCardsWithSameValue($this->cards);
 
         if (!$pair)
         {
@@ -96,24 +118,23 @@ class PokerHandEvaluator
         ];
     }
 
-    private function findPair(array $cards)
+    private function findCardsWithSameValue(array $cards, $neededCount = 2)
     {
-        $previous = false;
+        $sameCards = [];
 
         foreach ($cards as $card)
         {
-            if (!$previous) {
-                $previous = $card;
-
-                continue;
-            }
-
-            if ($previous['value'] == $card['value'])
+            if (empty($sameCards) || $sameCards[0]['value'] == $card['value'])
             {
-                return [$previous, $card];
+                $sameCards[] = $card;
+            } else {
+                $sameCards = [$card];
             }
 
-            $previous = $card;
+            if (count($sameCards) == $neededCount)
+            {
+                return $sameCards;
+            }
         }
 
         return false;
