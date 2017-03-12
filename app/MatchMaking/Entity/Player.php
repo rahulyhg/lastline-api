@@ -6,27 +6,27 @@ namespace App\MatchMaking\Entity;
 class Player
 {
 	private $id;
-	private $gameId;
-	private $place;
+	private $coins;
+	private $hand;
 
 	/**
 	 * Player constructor.
 	 *
 	 * @param string $id
-	 * @param int    $gameId
-	 * @param int    $place
+	 * @param int    $coins
+	 * @param array  $hand
 	 */
-	public function __construct($id, $gameId, $place)
+	public function __construct($id, $coins, array $hand)
 	{
-		$this->id = $id;
-		$this->gameId = $gameId;
-		$this->place = $place;
+		$this->id    = $id;
+		$this->coins = $coins;
+		$this->hand  = $hand;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getId()
+	public function getId() : string
 	{
 		return $this->id;
 	}
@@ -34,36 +34,28 @@ class Player
 	/**
 	 * @return int
 	 */
-	public function getGameId()
+	public function getCoins() : int
 	{
-		return $this->gameId;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getPlace()
-	{
-		return $this->place;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getDealer()
-	{
-		return $this->dealer;
+		return $this->coins;
 	}
 
 	/**
 	 * @return array
 	 */
-	public function toArray()
+	public function getHand() : array
+	{
+		return $this->hand;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function toArray() : array
 	{
 		return [
-			'id'        => $this->getId(),
-			'gameId'    => $this->getGameId(),
-			'place'     => $this->getPlace()
+			'id'       => $this->getId(),
+			'coins'    => $this->getCoins(),
+			'hand'     => $this->getHand()
 		];
 	}
 }

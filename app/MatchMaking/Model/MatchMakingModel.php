@@ -105,16 +105,17 @@ class MatchMakingModel
 		}
 
 		// kiosztjuk a kártyákat
-		foreach($game->getPlayerCards() as $userId => $playerCards)
+		foreach($game->getPlayers() as $player)
 		{
-			foreach($playerCards as $playerCard)
+			foreach($player->getHand() as $card)
 			{
 				foreach($users as $user)
 				{
-					broadcast(new DealCard($userId, $playerCard, $user->id));
+					broadcast(new DealCard($player->getId(), $card, $user->id));
 				}
 				sleep(1);
 			}
+
 		}
 	}
 }

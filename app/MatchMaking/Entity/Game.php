@@ -4,155 +4,135 @@ namespace App\MatchMaking\Entity;
 
 class Game
 {
-	/** @var string  */
-	private $gameToken;
+	/** @var Player[] */
+	private $players;
 
 	/** @var int  */
-	private $gameId;
-
-	/** @var int  */
-	private $smallBlindValue;
-
-	/** @var int  */
-	private $bigBlindValue;
-
-	/** @var array  */
-	private $playerCards;
-
-	/** @var Player  */
-	private $dealer;
-
-	/** @var Player */
-	private $bigBlind;
-
-	/** @var Player */
 	private $smallBlind;
 
-	/** @var Player */
-	private $activePlayer;
+	/** @var int  */
+	private $bigBlind;
+
+	/** @var string  */
+	private $dealer;
+
+	/** @var string  */
+	private $smallBlindPlayer;
+
+	/** @var string  */
+	private $bigBlindPlayer;
+
+	/** @var string  */
+	private $currentPlayer;
 
 	/**
 	 * Game constructor.
 	 *
-	 * @param string    $gameToken
-	 * @param int      $gameId
-	 * @param int       $smallBlindValue
-	 * @param int       $bigBlindValue
-	 * @param array     $playerCards
-	 * @param Player    $dealer
-	 * @param Player    $bigBlind
-	 * @param Player    $smallBlind
-	 * @param Player    $activePlayer
+	 * @param Player[]  $players
+	 * @param int       $smallBlind
+	 * @param int       $bigBlind
+	 * @param string    $dealer
+	 * @param string    $smallBlindPlayer
+	 * @param string    $bigBlindPlayer
+	 * @param string    $currentPlayer
 	 */
 	public function __construct(
-		$gameToken,
-		$gameId,
-		$smallBlindValue,
-		$bigBlindValue,
-		array $playerCards,
-		Player $dealer,
-		Player $bigBlind,
-		Player $smallBlind,
-		Player $activePlayer
+		array $players,
+		$smallBlind,
+		$bigBlind,
+		$dealer,
+		$smallBlindPlayer,
+		$bigBlindPlayer,
+		$currentPlayer
 	)
 	{
-		$this->gameToken = $gameToken;
-		$this->gameId = $gameId;
-		$this->smallBlindValue = $smallBlindValue;
-		$this->bigBlindValue = $bigBlindValue;
-		$this->playerCards   = $playerCards;
-		$this->dealer = $dealer;
-		$this->bigBlind = $bigBlind;
+		$this->players = $players;
 		$this->smallBlind = $smallBlind;
-		$this->activePlayer = $activePlayer;
+		$this->bigBlind = $bigBlind;
+		$this->dealer = $dealer;
+		$this->smallBlindPlayer = $smallBlindPlayer;
+		$this->bigBlindPlayer = $bigBlindPlayer;
+		$this->currentPlayer = $currentPlayer;
 	}
 
 	/**
-	 * @return string
+	 * @return Player[]
 	 */
-	public function getGameToken(): string
+	public function getPlayers(): array
 	{
-		return $this->gameToken;
+		return $this->players;
 	}
 
 	/**
 	 * @return int
 	 */
-	public function getGameId(): int
-	{
-		return $this->gameId;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getSmallBlindValue(): int
-	{
-		return $this->smallBlindValue;
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getBigBlindValue(): int
-	{
-		return $this->bigBlindValue;
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getPlayerCards() : array
-	{
-		return $this->playerCards;
-	}
-
-	/**
-	 * @return Player
-	 */
-	public function getDealer(): Player
-	{
-		return $this->dealer;
-	}
-
-	/**
-	 * @return Player
-	 */
-	public function getBigBlind(): Player
-	{
-		return $this->bigBlind;
-	}
-
-	/**
-	 * @return Player
-	 */
-	public function getSmallBlind(): Player
+	public function getSmallBlind(): int
 	{
 		return $this->smallBlind;
 	}
 
 	/**
-	 * @return Player
+	 * @return int
 	 */
-	public function getActivePlayer(): Player
+	public function getBigBlind(): int
 	{
-		return $this->activePlayer;
+		return $this->bigBlind;
 	}
+
+	/**
+	 * @return string
+	 */
+	public function getDealer(): string
+	{
+		return $this->dealer;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSmallBlindPlayer(): string
+	{
+		return $this->smallBlindPlayer;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getBigBlindPlayer(): string
+	{
+		return $this->bigBlindPlayer;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getCurrentPlayer(): string
+	{
+		return $this->currentPlayer;
+	}
+
 
 	/**
 	 * @return array
 	 */
 	public function toArray() : array
 	{
+		$players = [];
+		foreach($this->getPlayers() as $player)
+		{
+			$currentPlayer = $player->toArray();
+			unset($currentPlayer['hand']);
+			$players[] = $currentPlayer;
+		}
+
 		return [
-			'token'             => $this->getGameToken(),
-			'gameId'            => $this->getGameId(),
-			'smallBlindValue'   => $this->getSmallBlindValue(),
-			'bigBlindValue'     => $this->getBigBlindValue(),
-			'dealer'            => $this->getDealer()->toArray(),
-			'bigBlind'          => $this->getBigBlind()->toArray(),
-			'smallBlind'        => $this->getSmallBlind()->toArray(),
-			'activePlayer'      => $this->getActivePlayer()->toArray()
+			'smallBlind'        => $this->getSmallBlind(),
+			'bigBlind'          => $this->getBigBlind(),
+			'dealer'            => $this->getDealer(),
+			'bigBlindPlayer'    => $this->getBigBlindPlayer(),
+			'smallBlindPlayer'  => $this->getSmallBlindPlayer(),
+			'currentPlayer'     => $this->getCurrentPlayer(),
+			'players'           => $players
 		];
 	}
 

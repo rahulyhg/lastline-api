@@ -45,7 +45,7 @@ class DealCard implements ShouldBroadcast
 	 */
 	public function broadcastWith()
 	{
-		if($this->userId !== $this->targetId)
+		if ($this->userId != $this->targetId)
 		{
 			$this->cardName = 'back';
 		}

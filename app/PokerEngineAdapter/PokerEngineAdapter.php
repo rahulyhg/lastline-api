@@ -18,10 +18,33 @@ class PokerEngineAdapter
     public function createGame(array $playerIds) : Game
     {
     	$response = $this->post('/game/create', [
-    		'players' => $playerIds
+    		'playerIds' => $playerIds
 	    ]);
 
     	return $this->buildGameEntity($response);
+    }
+
+
+    public function gameCheck()
+    {
+
+    }
+
+    public function gameFold()
+    {
+	    $response = $this->post('/game/fold');
+
+	    return $response;
+    }
+
+    public function gameRaise()
+    {
+
+    }
+
+    public function gameCall()
+    {
+
     }
 
 	/**
@@ -32,9 +55,9 @@ class PokerEngineAdapter
     private function createPlayerEntity(array $player) : Player
     {
     	return new Player(
-    		$player['id'],
-		    $player['gameId'],
-		    $player['place']
+    		$player['id']['id'],
+		    $player['coins'],
+		    $player['hand']
 	    );
     }
 
@@ -45,17 +68,21 @@ class PokerEngineAdapter
 	 */
     private function buildGameEntity(array $params) : Game
     {
+    	$players = [];
+    	foreach($params['players'] as $player)
+    	{
+            $players[] = $this->createPlayerEntity($player);
+	    }
+
     	return new Game(
-    		$params['gameToken'],
-		    $params['gameId'],
-		    $params['smallBlindValue'],
-		    $params['bigBlindValue'],
-		    $params['playerCards'],
-		    $this->createPlayerEntity($params['dealer']),
-		    $this->createPlayerEntity($params['bigBlind']),
-			$this->createPlayerEntity($params['smallBlind']),
-			$this->createPlayerEntity($params['activePlayer'])
-        );
+    		$players,
+		    $params['smallBlind'],
+	        $params['bigBlind'],
+		    $params['dealer']['id'],
+	        $params['smallBlindPlayer']['id'],
+	        $params['bigBlindPlayer']['id'],
+	        $params['currentPlayer']['id']
+	    );
     }
 
 	/**
