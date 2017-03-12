@@ -13,6 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::get('mm', function(){
+	Artisan::call('matchmaking:find');
+});
 
 Route::middleware('cors')->get('/', function(){
    return [
