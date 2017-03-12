@@ -2,5 +2,5 @@
 
 return [
 	'playersMin' => 2,
-	'playersMax' => 8
+	'playersMax' => 5
 ];
