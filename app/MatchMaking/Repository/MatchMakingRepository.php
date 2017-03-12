@@ -42,6 +42,6 @@ class MatchMakingRepository
 	 */
 	public function allWaitingPlayers()
 	{
-		return MatchMakingQueue::with('user')->get();
+		return MatchMakingQueue::with('user')->latest()->take(5)->get();
 	}
 }
