@@ -25,6 +25,9 @@ class Game
 	/** @var string  */
 	private $currentPlayer;
 
+	/** @var int  */
+	private $pot;
+
 	/**
 	 * Game constructor.
 	 *
@@ -35,6 +38,7 @@ class Game
 	 * @param string    $smallBlindPlayer
 	 * @param string    $bigBlindPlayer
 	 * @param string    $currentPlayer
+	 * @param int       $pot
 	 */
 	public function __construct(
 		array $players,
@@ -43,7 +47,8 @@ class Game
 		$dealer,
 		$smallBlindPlayer,
 		$bigBlindPlayer,
-		$currentPlayer
+		$currentPlayer,
+		$pot
 	)
 	{
 		$this->players = $players;
@@ -53,6 +58,7 @@ class Game
 		$this->smallBlindPlayer = $smallBlindPlayer;
 		$this->bigBlindPlayer = $bigBlindPlayer;
 		$this->currentPlayer = $currentPlayer;
+		$this->pot = $pot;
 	}
 
 	/**
@@ -111,6 +117,14 @@ class Game
 		return $this->currentPlayer;
 	}
 
+	/**
+	 * @return int
+	 */
+	public function getPot()
+	{
+		return $this->pot;
+	}
+
 
 	/**
 	 * @return array
@@ -132,7 +146,8 @@ class Game
 			'bigBlindPlayer'    => $this->getBigBlindPlayer(),
 			'smallBlindPlayer'  => $this->getSmallBlindPlayer(),
 			'currentPlayer'     => $this->getCurrentPlayer(),
-			'players'           => $players
+			'players'           => $players,
+			'pot'               => $this->getPot()
 		];
 	}
 

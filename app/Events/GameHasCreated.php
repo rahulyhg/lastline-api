@@ -50,7 +50,10 @@ class GameHasCreated implements ShouldBroadcast
 	 */
     public function broadcastWith() : array
     {
-    	return $this->game->toArray();
+    	return [
+    		'event' => 'game.created',
+    		'data'  => $this->game->toArray()
+	    ];
     }
 
 	/**

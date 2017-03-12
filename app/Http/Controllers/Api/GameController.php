@@ -35,7 +35,7 @@ class GameController extends Controller
 		$gameModel->fold();
 
 		return [
-			'foo' => 'asd'
+			'success' => true
 		];
 	}
 
@@ -46,8 +46,13 @@ class GameController extends Controller
 	 */
 	public function raise(Request $request)
 	{
+		$pokerEngine = new PokerEngineAdapter();
+		$gameModel   = new GameModel($pokerEngine);
+
+		$gameModel->raise($request->coins);
+
 		return [
-			'foo' => 'asd'
+			'success' => true
 		];
 	}
 
@@ -58,8 +63,13 @@ class GameController extends Controller
 	 */
 	public function call(Request $request)
 	{
+		$pokerEngine = new PokerEngineAdapter();
+		$gameModel   = new GameModel($pokerEngine);
+
+		$gameModel->call();
+
 		return [
-			'foo' => 'asd'
+			'success' => true
 		];
 	}
 }

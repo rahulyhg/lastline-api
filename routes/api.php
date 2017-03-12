@@ -34,10 +34,10 @@ Route::group(['middleware' => ['jwt.auth', 'cors']], function(){
 	Route::get('matchmaking/cancel', 'MatchMakingController@cancel');
 
 	// game events
-	Route::post('game/check', 'GameController@check');
-	Route::post('game/fold', 'GameController@fold');
-	Route::post('game/raise', 'GameController@raise');
-	Route::post('game/call', 'GameController@call');
+	Route::get('game/check', 'GameController@check');
+	Route::get('game/fold', 'GameController@fold');
+	Route::get('game/raise', 'GameController@raise');
+	Route::get('game/call', 'GameController@call');
 
 });
 

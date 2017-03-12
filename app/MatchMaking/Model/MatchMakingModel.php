@@ -2,9 +2,10 @@
 
 namespace App\MatchMaking\Model;
 
-use App\Entity\Game;
+use App\Current;
 use App\Events\DealCard;
 use App\Events\GameHasCreated;
+use App\MatchMaking\Entity\Game;
 use App\MatchMakingQueue;
 use App\PokerEngineAdapter\PokerEngineAdapter;
 use App\User;
@@ -96,8 +97,26 @@ class MatchMakingModel
 		});
 
 		$pokerEngine = new PokerEngineAdapter();
-		$game        = $pokerEngine->createGame($playerIds);
+		$game        = $pokerEngine->createGame($users);
 
+		Current::truncate();
+
+		foreach($users as $user)
+		{
+			$current = new Current();
+			$current->user_id = $user->id;
+			$current->save();
+		}
+
+		$this->startGame($game, $users);
+	}
+
+	/**
+	 * @param Game       $game
+	 * @param Collection $users
+	 */
+	public function startGame(Game $game, Collection $users)
+	{
 		// websocketre küldés
 		foreach($users as $user)
 		{
@@ -115,7 +134,6 @@ class MatchMakingModel
 				}
 				sleep(1);
 			}
-
 		}
 	}
 }

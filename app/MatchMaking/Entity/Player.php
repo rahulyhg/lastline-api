@@ -8,6 +8,7 @@ class Player
 	private $id;
 	private $coins;
 	private $hand;
+	private $name;
 
 	/**
 	 * Player constructor.
@@ -15,12 +16,14 @@ class Player
 	 * @param string $id
 	 * @param int    $coins
 	 * @param array  $hand
+	 * @param string $name
 	 */
-	public function __construct($id, $coins, array $hand)
+	public function __construct($id, $coins, array $hand, $name)
 	{
 		$this->id    = $id;
 		$this->coins = $coins;
 		$this->hand  = $hand;
+		$this->name  = $name;
 	}
 
 	/**
@@ -48,6 +51,14 @@ class Player
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getName() : string
+	{
+		return $this->name;
+	}
+
+	/**
 	 * @return array
 	 */
 	public function toArray() : array
@@ -55,7 +66,8 @@ class Player
 		return [
 			'id'       => $this->getId(),
 			'coins'    => $this->getCoins(),
-			'hand'     => $this->getHand()
+			'hand'     => $this->getHand(),
+			'name'     => $this->getName()
 		];
 	}
 }

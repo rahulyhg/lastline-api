@@ -5,21 +5,36 @@ namespace App\PokerEngineAdapter;
 use App\MatchMaking\Entity\Player;
 use App\MatchMaking\Entity\Game;
 use GuzzleHttp\Client;
+use Illuminate\Support\Collection;
 
 class PokerEngineAdapter 
 {
     const POKER_ENGINE_URL = 'http://poker-service.fiterik.com';
 
 	/**
-	 * @param array $playerIds
+	 * @param Collection $players
 	 *
 	 * @return Game
 	 */
-    public function createGame(array $playerIds) : Game
+    public function createGame(Collection $players) : Game
     {
+	    $users = [];
+	    $requestUserIds = [];
+    	foreach($players as $player)
+	    {
+	    	$users[$player->id] = $player->username;
+		    $requestUserIds[] = $player->id;
+	    }
+
     	$response = $this->post('/game/create', [
-    		'playerIds' => $playerIds
+    		'playerIds' => $requestUserIds
 	    ]);
+
+    	// meghaxoltam a kurva életbe
+    	foreach($response['players'] as $i => $player)
+    	{
+    		$response['players'][$i]['username'] = $users[$player['id']];
+	    }
 
     	return $this->buildGameEntity($response);
     }
@@ -30,21 +45,35 @@ class PokerEngineAdapter
 
     }
 
+	/**
+	 * @return array
+	 */
     public function gameFold()
     {
-	    $response = $this->post('/game/fold');
+	    $response = $this->get('/game/fold');
 
 	    return $response;
     }
 
-    public function gameRaise()
+	/**
+	 * @param $coins
+	 *
+	 * @return array
+	 */
+    public function gameRaise($coins)
     {
+	    $response = $this->post('/game/raise', [
+	    	'coins' => $coins
+	    ]);
 
+	    return $response;
     }
 
     public function gameCall()
     {
+	    $response = $this->get('/game/call');
 
+	    return $response;
     }
 
 	/**
@@ -55,9 +84,10 @@ class PokerEngineAdapter
     private function createPlayerEntity(array $player) : Player
     {
     	return new Player(
-    		$player['id']['id'],
+    		$player['id'],
 		    $player['coins'],
-		    $player['hand']
+		    $player['hand'],
+		    $player['username']
 	    );
     }
 
@@ -66,7 +96,7 @@ class PokerEngineAdapter
 	 *
 	 * @return Game
 	 */
-    private function buildGameEntity(array $params) : Game
+    public function buildGameEntity(array $params) : Game
     {
     	$players = [];
     	foreach($params['players'] as $player)
@@ -78,10 +108,11 @@ class PokerEngineAdapter
     		$players,
 		    $params['smallBlind'],
 	        $params['bigBlind'],
-		    $params['dealer']['id'],
-	        $params['smallBlindPlayer']['id'],
-	        $params['bigBlindPlayer']['id'],
-	        $params['currentPlayer']['id']
+		    $params['dealer'],
+	        $params['smallBlindPlayer'],
+	        $params['bigBlindPlayer'],
+	        $params['nextPlayer'],
+		    $params['pot']
 	    );
     }
 
@@ -102,4 +133,22 @@ class PokerEngineAdapter
 
         return $response;
     }
+
+	/**
+	 * @param string $uri
+	 * @param array  $params
+	 *
+	 * @return mixed
+	 */
+	private function get(string $uri, array $params = [])
+	{
+		$client = new Client(['base_uri' => self::POKER_ENGINE_URL]);
+
+		$response = \GuzzleHttp\json_decode(
+			$client->get($uri, ['form_params' => $params])->getBody(),
+			true
+		);
+
+		return $response;
+	}
 }

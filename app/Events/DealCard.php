@@ -51,7 +51,7 @@ class DealCard implements ShouldBroadcast
 		}
 
 		return [
-			'action' => 'deal.card',
+			'event' => 'deal.card',
 			'data' => [
 				'card'   => $this->cardName,
 				'userId' => $this->userId
