@@ -30,7 +30,7 @@ Route::group(['middleware' => ['jwt.auth', 'cors']], function(){
 	Route::get('auth/check', 'AuthController@check');
 
 	// matchmaking routes
-	Route::get('matchmaking/register', 'MatchmakingController@register');
+	Route::get('matchmaking/register', 'MatchMakingController@register');
 	Route::get('matchmaking/cancel', 'MatchMakingController@cancel');
 
 	// game events
